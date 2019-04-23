@@ -121,9 +121,10 @@ def split_away_individual_hyperedges(bag, all_bags, num_uses_of_vtx, num_hypered
         # Try to split away a set of hyperedges that contain all occurrences of some vertex v
         if num_uses_of_vtx[v] > 1 and num_uses_of_vtx[v] == num_hyperedges_in_which_vtx_appears[v] and vtx_is_extractable(
                                                                     v, num_uses_of_vtx, num_hyperedges_in_which_vtx_appears, bag):
-            all_bags.append(Bag(all_bags[-1].id + 1, bag.id))
-            for he_id in bag.hyperedge_ids[:]:
-                if v in hyperedges[he_id].vertex_set:
+            he_ids = [he_id for he_id in bag.hyperedge_ids if v in hyperedges[he_id].vertex_set]
+            if len(he_ids) < len(bag.hyperedge_ids):   # don't do this if it leaves the bag empty
+                all_bags.append(Bag(all_bags[-1].id + 1, bag.id))
+                for he_id in he_ids:
                     all_bags[-1].hyperedge_ids.append(he_id)
                     bag.hyperedge_ids.remove(he_id)
                     for w in hyperedges[he_id].vertex_set_as_list:

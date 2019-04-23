@@ -1,2 +1,3 @@
 *.pyc
 htd-heur-public/
+tmp*.py
