@@ -42,7 +42,7 @@
 \relatedversion{}%optional, e.g. full version hosted on arXiv, HAL, or other respository/website
 %\relatedversion{A full version of the paper is available at \url{...}.}
 
-\supplement{\url{https://github.com/jamestrimble/hypebeast}}%optional, e.g. related research data, source code, ... hosted on a repository like zenodo, figshare, GitHub, ...
+\supplement{Source code DOI: \url{https://doi.org/10.5281/zenodo.3082314}; Source repository: \url{https://github.com/jamestrimble/hypebeast}}%optional, e.g. related research data, source code, ... hosted on a repository like zenodo, figshare, GitHub, ...
 
 %\funding{(Optional) general funding statement \dots}%optional, to capture a funding statement, which applies to all authors. Please enter author specific funding statements as fifth argument of the \author macro.
 
@@ -77,10 +77,9 @@ We introduce Hypebeast, a simple heuristic solver for hypertree decomposition im
 
 \section{Introduction}
 
-This note introduces Hypebeast, a heuristic solver for tree decomposition.  We wrote the solver quickly, as our first attempt to gain an understanding of the problem.  And this is evident from the solver's performance!---for example, our solver finds worse decompositions than HTD (\url{https://github.com/mabseher/htd}) on many of the public PACE Challenge instances.  Nevertheless, we hope that the simplicity of our solver gives it some value, and we note that our solver does appear to give smaller-width decompositions than HTD on a small number of the public PACE Challenge instances.
+This note introduces Hypebeast, a heuristic solver for tree decomposition.  We wrote the solver quickly, as our first attempt to gain an understanding of the problem.  And this is evident from the solver's performance!---for example, our solver finds worse decompositions than HTD (\url{https://github.com/mabseher/htd}) on many of the public PACE Challenge instances.  Nevertheless, we hope that the simplicity of our solver gives it some value, and we note that our solver does appear to give smaller-width decompositions than HTD (at least using its default configuration) on a small number of the public PACE Challenge instances.
 
 To simplify the problem, we impose the following restrictions on a solution.
-
 \begin{itemize}
   \item The tree can have depth at most 3 (i.e. root, children, and grandchildren).
   \item Each hyperedge appears in exactly one tree node.
@@ -89,7 +88,7 @@ To simplify the problem, we impose the following restrictions on a solution.
 
 \section{The algorithm}
 
-In our example, we will consider a hypergraph with the twelve nodes $\{1, \dots, 12\}$ and the fifteen edges listed in \ref{fig:root-node}.  Initially, the hypertree decomposition consists of a single-node tree containing all of the hyperedges, as shown in the figure.  We do not store the set of vertices in the bag explicity, but throughout our algorithm the set of vertices in a node's bag is the union of vertices in the node's hyperedges.
+In our example, we will consider a hypergraph with the twelve nodes $\{1, \dots, 12\}$ and the fifteen edges listed in Figure \ref{fig:root-node}.  Initially, the hypertree decomposition consists of a single-node tree containing all of the hyperedges, as shown in the figure.  We do not store the set of vertices in the bag explicity, but throughout our algorithm the set of vertices in a node's bag is the union of vertices in the node's hyperedges.
 
 \begin{figure}
 \centering
@@ -106,7 +105,7 @@ At every step of the algorithm, we have a valid hypertree decomposition of the i
 
 \subsection{Phase 1}
 
-The algorithm has two phases.  Phase 1 takes a parameter $k$, and attempts to move up to $k$ hyperedges from the root to a child node, then up to $k$ hyperedges from the root to a second child node, and so on.  We only allow a hyperedge to be moved to a child node if none of its vertices appear in any of the previous child nodes.  Figure \ref{fig:after-phase-1} shows our hypertree decomposition after phase 1, with $k=3$.
+The algorithm has two phases.  Phase 1 takes a parameter $k$, and attempts to move up to $k$ hyperedges from the root to a child node, then up to $k$ hyperedges from the root to a second child node, and so on.  We only allow a hyperedge to be moved to a child node only if none of its vertices appear in any of the previous child nodes.  Figure \ref{fig:after-phase-1} shows our hypertree decomposition after phase 1, with $k=3$.  Each of the remaining ten hyperedges in the root node shares at least one vertex with a hyperedge in the first child node, and therefore no further moves are possible in this phase.
 
 \begin{figure}
 \centering
@@ -125,12 +124,12 @@ The algorithm has two phases.  Phase 1 takes a parameter $k$, and attempts to mo
 
 In phase 2, a small set of rules are followed in order to:
 \begin{itemize}
-  \item move one or more hyperedges from the root node to the child nodes created in phase 1, or
-  \item create a new child node of either the root node or a phase-1 child node, and move one or more hyperedges to that node.
+  \item move one or more hyperedges from the root node to a child node created in phase 1, or
+  \item create a new child of either the root node or a phase-1 child node, and move one or more hyperedges to the new node from its parent.
 \end{itemize}
 
 Figure \ref{fig:after-phase-2} shows the hypertree decomposition after phase 2.
-The phase 2 rules are all fairly straightforward, but for brevity we will state only one of them here.  If a node contains a hyperedge $H$ such that every vertex $v \in H$ appears in another of the node's hyperedges, then it safe to create a child node and move $H$ to the child node.  In our running example, this rule was made to create the rightmost node in Figure \ref{fig:after-phase-2}, with the hyperedge $\{5, 6, 7\}$ being moved from the root node.
+The phase 2 rules are all fairly straightforward, but for brevity we will state only one of them here.  If a node contains a hyperedge $H$ such that every vertex $v \in H$ appears in another of the node's hyperedges, then it safe to create a child node and move $H$ to the child node.  In our running example, this rule was used to create the rightmost node in Figure \ref{fig:after-phase-2}, with the hyperedge $\{5, 6, 7\}$ being moved from the root node.
 
 \begin{figure}
 \centering
